@@ -1,0 +1,71 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" contentType="text/html" cache="false" controller="emoEntry">
+<apex:outputText escape="false" value="<!DOCTYPE html>"/>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0b1/jquery.mobile-1.0b1.min.css" />
+    <script src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.0b1/jquery.mobile-1.0b1.min.js"></script>
+</head>
+    
+
+<body>
+<div data-role="page" data-theme="b">
+
+    <div data-role="header">
+        <h1>Batch It Up!</h1>
+    </div>
+
+    <div data-role="content">
+        How are you feeling <u>right now</u>?
+        <div id="dynamicMessageDIV" style="text-align: center; color: darkgreen; font-weight:bold; margin: 5px 0;"></div>
+        <div >
+            <span data-role="button" onclick="recordCheckIn(4,'Awesome');">#Awesome</span>
+            <span data-role="button" onclick="recordCheckIn(3,'Engaged');">Engaged</span>
+            <span data-role="button" onclick="recordCheckIn(2,'Indifferent');">Indifferent</span>
+            <span data-role="button" onclick="recordCheckIn(1,'Bored');">Bored</span>
+        </div>
+        <div>
+            <p>Your data is recorded immediately upon making a selection. We'll use the collected data at the end of the presentation.</p>
+            <p><em>All submissions are anonymous</em></p>
+            <p>
+                Technologies used in this page:
+                    <ul>
+                        <li>Visualforce running on Salesforce Sites</li>
+                        <li>jQuery Mobile to get the mobilized styling</li>
+                        <li>JavaScript Remoting to quickly talk to the Apex Controller</li>
+                    </ul>
+            </p>
+        </div>
+  
+    </div>
+
+    <div data-role="footer">
+        <h1>Powered by<br/>Force.com</h1>
+    </div>
+    
+</div>
+
+<script type="text/javascript">
+    jQuery.noConflict();
+    jQuery.mobile.hidePageLoadingMsg();
+    
+    function recordCheckIn(val, valString){
+        jQuery.mobile.showPageLoadingMsg();
+        emoEntry.recordEmotion(val, valString, function(result, event){
+            
+            if (typeof(result.Id) == "undefined"){
+                jQuery('#dynamicMessageDIV').html('Ooops! An error occurred.<br/>Your emotion was not registered.');
+            } else {
+                var myDate = new Date(parseInt(result.CreatedDate));
+                jQuery('#dynamicMessageDIV').html('"' + result.Mood__c + '" successfully recorded<br/>' + myDate.toLocaleDateString() + ' ' +  myDate.toLocaleTimeString());
+            }
+            jQuery.mobile.hidePageLoadingMsg();
+        });
+    }
+    
+</script>
+</body>
+</html>
+</apex:page>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Mood_Number__c</fullName>
+        <externalId>false</externalId>
+        <label>Mood Number</label>
+        <precision>1</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mood__c</fullName>
+        <externalId>false</externalId>
+        <label>Mood</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Happy</fullName>
+                <color>#33FF33</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Sad</fullName>
+                <color>#3333FF</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Bored</fullName>
+                <color>#BBBBBB</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Confused</fullName>
+                <color>#996633</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Excited</fullName>
+                <color>#FF0000</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Silly</fullName>
+                <color>#F3D904</color>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <label>Emotion</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Mood__c</columns>
+        <columns>Mood_Number__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>Filter_by_Specific_Date</fullName>
+        <columns>NAME</columns>
+        <columns>Mood__c</columns>
+        <columns>Mood_Number__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>equals</operation>
+            <value>7/15/2011 12:00 AM</value>
+        </filters>
+        <label>Filter by Specific Date</label>
+    </listViews>
+    <nameField>
+        <displayFormat>emo{000000}</displayFormat>
+        <label>Emotion Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Emotions</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Mood__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <listViewButtons>Mass_Delete</listViewButtons>
+        <searchResultsAdditionalFields>Mood__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <startsWith>Vowel</startsWith>
+    <webLinks>
+        <fullName>Mass_Delete</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Mass Delete</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/9.0/connection.js&quot;)} 
+
+var records = {!GETRECORDIDS( $ObjectType.Emotion__c  )}; 
+
+if (records[0] == null) { 
+alert(&quot;Please select at least one record.&quot;) } 
+else { 
+
+var errors = []; 
+var result = sforce.connection.deleteIds(records); 
+if (result &amp;&amp; result.length){ 
+var numFailed = 0; 
+var numSucceeded = 0; 
+for (var i = 0; i &lt; result.length; i++){ 
+var res = result[i]; 
+if (res &amp;&amp; res.success == &apos;true&apos;){ 
+numSucceeded++; 
+} else { 
+var es = res.getArray(&quot;errors&quot;); 
+if (es.length &gt; 0) { 
+errors.push(es[0].message); 
+} 
+numFailed++; 
+} 
+} 
+if (numFailed &gt; 0){ 
+alert(&quot;Failed: &quot; + numFailed + &quot;\nSucceeded: &quot; + numSucceeded + &quot; \n Due to: &quot; + errors.join(&quot;\n&quot;)); 
+} else { 
+alert(&quot;Number of records deleted: &quot; + numSucceeded); 
+} 
+} 
+window.location.reload(); 
+}</url>
+    </webLinks>
+</CustomObject>

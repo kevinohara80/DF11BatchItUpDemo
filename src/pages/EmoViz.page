@@ -1,0 +1,107 @@
+<apex:page controller="EmoVizController" tabStyle="EmoViz__tab" >
+
+<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" />
+<apex:includeScript value="https://www.google.com/jsapi" />
+
+<script type="text/javascript">
+      
+	google.load('visualization', '1', {packages:['corechart']});
+	
+	var j$ = jQuery.noConflict();
+      
+	function drawViz(data, width, height) {
+		
+		var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+        chart.draw(data, {
+        	width: width, 
+        	height: height, 
+        	title: 'Emotional Analysis',
+        	isStacked: true,
+        	lineWidth: 4,
+			hAxis: {
+				title: 'Minute',
+				textStyle: {fontSize: 10}, 
+				titleTextStyle: {color: '#222222'}
+			},
+			vAxis: {
+				title: 'Score/Count', 
+				titleTextStyle: {color: '#222222'} 
+			}
+   		});
+  
+  		
+	}
+	
+	function getDataTable(results) {
+		
+		var data = new google.visualization.DataTable();
+		
+		data.addColumn('string', 'Minute');
+  		data.addColumn('number', 'Score');
+  		data.addColumn('number', 'Emotions');
+  		
+  		for(var i=0; i<results.length; i++) {
+  			data.addRow([results[i].Minute_Number__c.toString(), results[i].Score__c, results[i].Emotions_Count__c]);
+  		}
+		
+		return data;
+		
+	}
+	
+	function getBatchResults(bpid) {
+
+		
+		var res = EmoVizController.getResults(bpid, function(results, event) {
+
+			this.results = results;
+		
+		});
+      	
+      	alert(JSON.stringify(res.results));
+      	
+      	return res.results;
+		
+	}
+      
+
+	j$(document).ready(function() {
+      	
+      	var batchPrepId = j$('.select-batch-prep option:selected').val();
+      	
+      	var width = j$('#chart_div').width();
+      	var height = 600;
+
+		EmoVizController.getResults(batchPrepId, function(results, event) {
+		
+			var data = getDataTable(results);
+			drawViz(data, width, height);
+		
+		});	
+      	
+      
+	});
+      
+      
+</script>
+
+<style>
+	
+	#emo-viz .page-header{font-size:1.3em}
+
+</style>
+
+<apex:form >
+
+<div id="emo-viz">
+
+<h1 class="page-header">Emotional Vizualization</h1><br /><br />
+
+<apex:selectList styleClass="select-batch-prep" id="select-batch-prep" multiselect="false" size="1" value="{!selectedBatch}">
+	<apex:selectOptions value="{!batchOptions}" />
+</apex:selectList>
+<br /><br />
+<div id="chart_div" style="width:400; height:300"></div>
+
+</div>
+</apex:form>
+</apex:page>
